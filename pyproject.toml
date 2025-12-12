@@ -1,0 +1,22 @@
+[project]
+name = "pln2-practica1"
+version = "0.1.0"
+description = "Proyecto con el código utilizado en la práctica 1 de la asignatura Procesamiento del Lenguaje Natural 2"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "kagglehub==0.3.13",
+    "matplotlib>=3.10.7",
+    "numpy==2.2.6",
+    "pandas==2.3.3",
+    "scikit-learn>=1.7.2",
+    "seaborn>=0.13.2",
+    "torch==2.9.0",
+    "transformers==4.57.1",
+]
+
+[dependency-groups]
+dev = [
+    "langcodes>=3.5.0",
+    "pytest==8.4.2",
+]
