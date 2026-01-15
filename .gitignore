@@ -1,0 +1,22 @@
+# Ignorar un archivo CSV específico en la carpeta data
+data/*.csv
+
+# Entornos de Python
+*.venv
+
+# PyCharm
+*.idea
+
+# Cache
+**/__pycache__/
+*.pyc
+
+# Datos generados
+data/*
+
+# Modelos guardados
+models/
+
+# Carpetas temporales de Hugging Face
+tmp_*/
+cache-*.arrow

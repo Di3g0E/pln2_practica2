@@ -1,8 +1,18 @@
-pandas==2.3.3
-numpy==2.2.6
+# Main dependencies
+accelerate>=1.12.0
+datasets>=4.4.2
+ipykernel>=7.1.0
+ipywidgets>=8.1.8
+jupyter>=1.1.1
 kagglehub==0.3.13
-transformers==4.57.1
+matplotlib>=3.10.7
+numpy==2.2.6
+pandas==2.3.3
+scikit-learn>=1.7.2
+seaborn>=0.13.2
 torch==2.9.0
-datasets
-accelerate
-scikit-learn
+transformers==4.57.1
+
+# Dev dependencies
+langcodes>=3.5.0
+pytest==8.4.2

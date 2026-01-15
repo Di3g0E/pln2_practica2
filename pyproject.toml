@@ -1,10 +1,15 @@
 [project]
-name = "pln2-practica1"
+name = "pln2-practica2"
 version = "0.1.0"
-description = "Proyecto con el código utilizado en la práctica 1 de la asignatura Procesamiento del Lenguaje Natural 2"
+description = "Proyecto con el código utilizado en la práctica 2 de la asignatura Procesamiento del Lenguaje Natural 2"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
+    "accelerate>=1.12.0",
+    "datasets>=4.4.2",
+    "ipykernel>=7.1.0",
+    "ipywidgets>=8.1.8",
+    "jupyter>=1.1.1",
     "kagglehub==0.3.13",
     "matplotlib>=3.10.7",
     "numpy==2.2.6",
