@@ -15,8 +15,10 @@ data/*.csv
 data/*
 
 # Modelos guardados
-models/
+models/*
 
 # Carpetas temporales de Hugging Face
 tmp_*/
 cache-*.arrow
+
+.ipynb_checkpoints
