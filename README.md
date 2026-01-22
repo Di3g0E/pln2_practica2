@@ -67,4 +67,9 @@
     - **Procesador**: AMD Ryzen 7 7800X3D.
     - **Memoria RAM**: 32 GB.
     - **Tarjeta gráfica**: NVIDIA GeForce RTX 5070 V2 (12 GB VRAM).
-- El tiempo total de ejecución del notebook es de $\approx 3$ horas (contando con los modelos teacher, baseline y student guardados localmente).
+- El tiempo total de ejecución del notebook es de $\approx 3$ horas contando con que los siguientes elementos están guardados localmente:
+    - Conjunto de datos armonizado (splits train, eval y test) compatible con transformer y con baseline.
+    - Vectores densos de embeddings extraídos con el modelo Transformer teacher para el conjunto de datos.
+    - Modelo Transformer teacher entrenado en la práctica anterior.
+    - Modelo student.
+    - Modelo baseline.
