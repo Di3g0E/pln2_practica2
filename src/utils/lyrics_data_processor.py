@@ -32,18 +32,29 @@ class LyricsDataProcessor:
     ):
         """
         Constructor de la clase LyricsDataProcessor.
-        Args:
-            output_dir (str | Path): Directorio donde se guardarán los datos procesados.
-            datasets (list[pd.DataFrame]): Lista de DataFrames con los datasets a procesar
-            dataset_configs (list[LyricsDatasetConfig]): Configuraciones de los datasets.
-            genre_map (dict[str, str]): Mapeo de géneros musicales.
-            label2id (dict[str: int]): Mapeo de etiquetas a IDs.
-            id2label (dict[int: str]): Mapeo de IDs a etiquetas.
-            clean_lyrics_fns (list[Callable[[str], str]] | None): Lista de funciones para limpiar los lyrics de cada dataset.
-            eval_split (float | None): Proporción del dataset para validación. Si es None, no se crea un conjunto de validación.
-            test_split (float | None): Proporción del dataset para test. Si es None, no se crea un conjunto de test.
-            transformer_model_name (str): Nombre del modelo transformer para tokenización.
-            device (str | torch.device): Dispositivo donde se ejecutarán las operaciones (cpu o cuda).
+
+        :param output_dir: Directorio de salida para guardar los datos procesados.
+        :type output_dir: str | Path
+        :param datasets: Lista de datasets a procesar.
+        :type datasets: list[pd.DataFrame]
+        :param dataset_configs: Configuraciones correspondientes a cada dataset.
+        :type dataset_configs: list[LyricsDatasetConfig]
+        :param genre_map: Mapeo de géneros a etiquetas normalizadas.
+        :type genre_map: dict[str, str]
+        :param label2id: Mapeo de etiquetas a IDs.
+        :type label2id: dict[str: int]
+        :param id2label: Mapeo de IDs a etiquetas.
+        :type id2label: dict[int: str]
+        :param clean_lyrics_fns: Lista de funciones para limpiar los lyrics de cada dataset.
+        :type clean_lyrics_fns: list[Callable[[str], str]] | None
+        :param eval_split: Proporción del conjunto de evaluación.
+        :type eval_split: float | None
+        :param test_split: Proporción del conjunto de test.
+        :type test_split: float | None
+        :param transformer_model_name: Nombre del modelo Transformer para tokenización.
+        :type transformer_model_name: str
+        :param device: Dispositivo para PyTorch.
+        :type device: str | torch.device
         """
         self.output_dir = Path(output_dir)
         self.__datasets = datasets.copy()
@@ -343,10 +354,11 @@ class LyricsDataProcessor:
     def get_train_data(self, return_format: str = "baseline") -> tuple[csr_matrix, np.ndarray] | Dataset:
         """
         Obtiene los datos de entrenamiento en el formato especificado.
-        Args:
-            return_format (str): Formato de retorno de los datos. Puede ser "baseline" o "transformer".
-        Output:
-            tuple[csr_matrix, np.ndarray] | Dataset
+
+        :param return_format: Formato de los datos a retornar ('baseline' o 'transformer').
+        :type return_format: str
+        :return: Datos de entrenamiento en el formato especificado.
+        :rtype: tuple[csr_matrix, np.ndarray] | Dataset
         """
         if return_format == "baseline":
             if self.__X_train_baseline is None:
@@ -370,6 +382,10 @@ class LyricsDataProcessor:
         """
         Obtiene los datos de validación en el formato especificado.
 
+        :param return_format: Formato de los datos a retornar ('baseline' o 'transformer').
+        :type return_format: str
+        :return: Datos de validación en el formato especificado.
+        :rtype: tuple[csr_matrix, np.ndarray] | Dataset
         """
         if return_format == "baseline":
             if self.__X_eval_baseline is None:
@@ -390,6 +406,13 @@ class LyricsDataProcessor:
                 f"- El formato 'return_format={return_format}' no está soportado. Utiliza 'baseline' o 'transformer'.")
 
     def get_test_data(self, return_format: str = "baseline"):
+        """
+        Obtiene los datos de test en el formato especificado.
+        :param return_format: Formato de los datos a retornar ('baseline' o 'transformer').
+        :type return_format: str
+        :return: Datos de test en el formato especificado.
+        :rtype: tuple[csr_matrix, np.ndarray] | Dataset
+        """
         if return_format == "baseline":
             if self.__X_test_baseline is None:
                 raise RuntimeError(
@@ -446,12 +469,36 @@ class LyricsDataProcessor:
 
     @staticmethod
     def load_data_baseline(path: str | Path):
+        """
+        Carga los datos de baseline desde un archivo.
+
+        :param path: Ruta al archivo de datos.
+        :type path: str | Path
+        :return: Datos de baseline cargados.
+        :rtype: csr_matrix
+        """
+
         return load_npz(path)
 
     @staticmethod
     def load_label(path: str | Path):
+        """
+        Carga las etiquetas desde un archivo.
+
+        :param path: Ruta al archivo de etiquetas.
+        :type path: str | Path
+        :return: Etiquetas cargadas.
+        :rtype: np.ndarray
+        """
         return np.load(path)
 
     @staticmethod
     def load_dataset_transformer(path: str | Path):
+        """
+        Carga un conjunto de datos de transformer desde un directorio.
+        :param path: Ruta al directorio del conjunto de datos.
+        :type path: str | Path
+        :return: Conjunto de datos cargado.
+        :rtype: Dataset
+        """
         return Dataset.load_from_disk(path)

@@ -27,15 +27,23 @@ class TransformerModel(Model):
     ):
         """
         Constructor de la clase TransformerModel.
-        Args:
-            output_dir (str | Path): Directorio donde se guardará el modelo.
-            label2id (dict[str: int]): Mapeo de etiquetas a IDs.
-            id2label (dict[int: str]): Mapeo de IDs a etiquetas.
-            model_name (str): Nombre del modelo preentrenado de Hugging Face.
-            num_labels (int): Número de etiquetas del modelo.
-            epochs (int): Número de épocas para el entrenamiento.
-            batch_train (int): Tamaño del batch para el entrenamiento.
-            batch_eval (int): Tamaño del batch para la evaluación.
+
+        :param output_dir: Directorio de salida para guardar el modelo.
+        :type output_dir: str | Path
+        :param label2id: Mapeo de etiquetas a IDs.
+        :type label2id: dict[str: int]
+        :param id2label: Mapeo de IDs a etiquetas.
+        :type id2label: dict[int: str] 
+        :param model_name: Nombre del modelo preentrenado de Hugging Face.
+        :type model_name: str
+        :param num_labels: Número de etiquetas para clasificación.
+        :type num_labels: int
+        :param epochs: Número de épocas para el entrenamiento.
+        :type epochs: int
+        :param batch_train: Tamaño del batch para entrenamiento.
+        :type batch_train: int
+        :param batch_eval: Tamaño del batch para evaluación.
+        :type batch_eval: int
         """
         self.output_dir = output_dir
         self.label2id = label2id
@@ -54,10 +62,11 @@ class TransformerModel(Model):
     def compute_metrics(self, eval_pred: tuple[np.ndarray, np.ndarray]) -> dict[str, float]:
         """
         Calcula las métricas de evaluación.
-        Args:
-            eval_pred: Predicciones del modelo.
-        Output:
-            dict[str, float]
+
+        :param eval_pred: Tupla con logits y etiquetas verdaderas.
+        :type eval_pred: tuple[np.ndarray, np.ndarray]
+        :return: Diccionario con las métricas calculadas.
+        :rtype: dict[str, float]
         """
         logits, labels = eval_pred
         predictions = np.argmax(logits, axis=-1)
@@ -71,9 +80,9 @@ class TransformerModel(Model):
     def fit(self, train_dataset: Dataset, eval_dataset: Dataset):
         """
         Entrena el modelo con el conjunto de datos de entrenamiento y evalúa en el conjunto de validación.
-        Args:
-            train_dataset (Dataset): Conjunto de datos de entrenamiento.
-            eval_dataset (Dataset): Conjunto de datos de validación.
+
+        :param train_dataset: Conjunto de datos de entrenamiento.
+        :type train_dataset: Dataset
         """
         print(f"- Iniciando entrenamiento del modelo {self.model_name}...")
 
@@ -107,10 +116,11 @@ class TransformerModel(Model):
     def predict(self, X: Dataset) -> np.ndarray:
         """
         Realiza predicciones sobre el conjunto de datos dado.
-        Args:
-            X (Dataset): Conjunto de datos sobre el cual se realizarán las predicciones.
-        Output:
-            np.ndarray
+
+        :param X: Conjunto de datos para predecir.
+        :type X: Dataset
+        :return: Predicciones del modelo.
+        :rtype: np.ndarray
         """
         print("- Realizando predicciones...")
         predictions = self.trainer.predict(X)
@@ -119,9 +129,10 @@ class TransformerModel(Model):
 
     def plot_training_curves(self) -> plt.Figure:
         """
-        Visualiza la evolución del accuracy durante el entrenamiento.
-        Output:
-            plt.Figure
+        Visualiza la evolución del accuracy de validación durante el entrenamiento.
+
+        :return: Figura de matplotlib con las curvas de aprendizaje.
+        :rtype: plt.Figure
         """
         log_history = self.trainer.state.log_history
 
@@ -152,12 +163,14 @@ class TransformerModel(Model):
 
     def evaluate(self, dataset: Dataset, y_pred: np.ndarray | None = None) -> dict:
         """
-        Evalúa el modelo.
-        Args:
-            X (Dataset): Conjunto de datos para evaluar.
-            y (np.ndarray): Etiquetas verdaderas.
-        Output:
-            dict
+        Evalúa el modelo en un conjunto de datos.
+
+        :param dataset: Conjunto de datos para evaluar.
+        :type dataset: Dataset
+        :param y_pred: Predicciones precomputadas (opcional).
+        :type y_pred: np.ndarray | None
+        :return: Diccionario con las métricas de evaluación.
+        :rtype: dict
         """
         print("- Evaluando el modelo...")
         if y_pred is None:
@@ -180,10 +193,13 @@ class TransformerModel(Model):
     def plot_confusion_matrix(self, dataset: Dataset, y_pred: np.ndarray | None = None) -> plt.Figure:
         """
         Grafica la matriz de confusión del modelo.
-        Args:
-            dataset (Dataset): Conjunto de datos para evaluar.
-        Output:
-            plt.Figure
+
+        :param dataset: Conjunto de datos para evaluar.
+        :type dataset: Dataset
+        :param y_pred: Predicciones precomputadas (opcional).
+        :type y_pred: np.ndarray | None
+        :return: Figura de matplotlib con la matriz de confusión.
+        :rtype: plt.Figure
         """
         print("- Graficando matriz de confusión...")
         if y_pred is None:
@@ -204,9 +220,10 @@ class TransformerModel(Model):
 
     def save_model(self, path: str | Path):
         """
-        Guarda el modelo en la ruta especificada.
-        Args:
-            path (str | Path): Ruta donde se guardará el modelo.
+        Guarda el modelo entrenado en disco.
+
+        :param path: Ruta donde guardar el modelo.
+        :type path: str | Path
         """
         print(f"- Guardando modelo en {path}...")
         self.trainer.save_model(path)
@@ -214,13 +231,16 @@ class TransformerModel(Model):
     @staticmethod
     def load_model(path: str | Path, label2id: dict | None = None, id2label: dict | None = None) -> "TransformerModel":
         """
-        Carga el modelo desde la ruta especificada.
-        Args:
-            path: Ruta del modelo guardado
-            label2id (dict): Mapeo de etiquetas a IDs.
-            id2label (dict): Mapeo de IDs a etiquetas.
-        Returns:
-            TransformerModel
+        Carga un modelo previamente guardado desde disco.
+
+        :param path: Ruta desde donde cargar el modelo.
+        :type path: str | Path
+        :param label2id: Mapeo de etiquetas a IDs (opcional).
+        :type label2id: dict | None
+        :param id2label: Mapeo de IDs a etiquetas (opcional).
+        :type id2label: dict | None
+        :return: Instancia del modelo cargado.
+        :rtype: TransformerModel
         """
         print(f"- Cargando modelo desde {path}...")
         model = AutoModelForSequenceClassification.from_pretrained(path)

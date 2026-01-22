@@ -3,7 +3,16 @@ import json
 
 
 class LyricsDatasetConfig:
+    """
+    Clase que representa la configuración de un dataset de lyrics.
+    """
+
     def __init__(self, config_path: str | Path):
+        """
+        Constructor de la clase LyricsDatasetConfig.
+        :param config_path: Ruta al fichero JSON con la configuración del dataset.
+        :type config_path: str | Path
+        """
         self.config_path = Path(config_path)
 
         try:

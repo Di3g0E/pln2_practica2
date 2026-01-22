@@ -21,6 +21,14 @@ class BaselineModel(Model):
             epochs: int = 15,
             batch_size: int = 128
     ):
+        """
+        Constructor de la clase BaselineModel.
+
+        :param epochs: Número de épocas para el entrenamiento.
+        :type epochs: int
+        :param batch_size: Tamaño del mini-batch para el entrenamiento.
+        :type batch_size: int
+        """
         self.epochs = epochs
         self.batch_size = batch_size
 
@@ -39,12 +47,16 @@ class BaselineModel(Model):
 
     def fit(self, X: csr_matrix, y: np.ndarray, X_eval: csr_matrix | None = None, y_eval: np.ndarray | None = None):
         """
-        Entrena el modelo utilizando mini-batch SGD.
-        Args:
-            X (np.ndarray): Matriz de características de entrenamiento.
-            y (np.ndarray): Vector de etiquetas de entrenamiento.
-            X_eval (np.ndarray | None): Matriz de características de evaluación.
-            y_eval (np.ndarray | None): Vector de etiquetas de evaluación.
+        Entrena el modelo utilizando mini-batch SGD con validación opcional.
+
+        :param X: Matriz de características de entrenamiento.
+        :type X: csr_matrix
+        :param y: Vector de etiquetas de entrenamiento.
+        :type y: np.ndarray
+        :param X_eval: Matriz de características de validación.
+        :type X_eval: csr_matrix | None
+        :param y_eval: Vector de etiquetas de validación.
+        :type y_eval: np.ndarray | None
         """
         print(f"- Iniciando entrenamiento de {self.epochs} epochs...")
 
@@ -80,19 +92,21 @@ class BaselineModel(Model):
     def predict(self, X: csr_matrix) -> np.ndarray:
         """
         Realiza predicciones utilizando el modelo entrenado.
-        Args:
-            X (np.ndarray): Matriz de características para predecir.
-        Output:
-            np.ndarray: Vector de etiquetas predichas.
+
+        :param X: Matriz de características sobre las que predecir.
+        :type X: csr_matrix
+        :return: Predicciones del modelo.
+        :rtype: np.ndarray
         """
 
         return self.clf.predict(X)
 
     def plot_training_curves(self) -> plt.Figure:
         """
-        Visualiza la evolución del accuracy durante el entrenamiento.
-        Output:
-            plt.Figure
+        Visualiza la evolución del accuracy de entrenamiento y validación.
+
+        :return: Figura de matplotlib con las curvas de aprendizaje.
+        :rtype: plt.Figure
         """
         epochs = range(1, len(self.history['train_acc']) + 1)
 
@@ -112,12 +126,16 @@ class BaselineModel(Model):
 
     def evaluate(self, X: csr_matrix, y: np.ndarray, y_pred: np.ndarray | None = None) -> dict:
         """
-        Evalúa el modelo
-        Args:
-            X (np.ndarray): Matriz de características.
-            y (np.ndarray): Vector de etiquetas verdaderas.
-        Output:
-            dict
+        Evalúa el modelo con métricas de accuracy, F1 y matriz de confusión.
+
+        :param X: Matriz de características.
+        :type X: csr_matrix
+        :param y: Vector de etiquetas verdaderas.
+        :type y: np.ndarray
+        :param y_pred: Predicciones precomputadas (opcional).
+        :type y_pred: np.ndarray | None
+        :return: Diccionario con las métricas de evaluación.
+        :rtype: dict
         """
         if y_pred is None:
             preds = self.predict(X)
@@ -138,11 +156,15 @@ class BaselineModel(Model):
     def plot_confusion_matrix(self, X: csr_matrix, y: np.ndarray, y_pred: np.ndarray | None = None) -> plt.Figure:
         """
         Grafica la matriz de confusión del modelo.
-        Args:
-            X (np.ndarray): Matriz de características.
-            y (np.ndarray): Vector de etiquetas verdaderas.
-        Output:
-            plt.Figure
+
+        :param X: Matriz de características.
+        :type X: csr_matrix
+        :param y: Vector de etiquetas verdaderas.
+        :type y: np.ndarray
+        :param y_pred: Predicciones precomputadas (opcional).
+        :type y_pred: np.ndarray | None
+        :return: Figura de matplotlib con la matriz de confusión.
+        :rtype: plt.Figure
         """
         if y_pred is None:
             preds = self.predict(X)
@@ -160,8 +182,9 @@ class BaselineModel(Model):
     def save_model(self, path: str | Path):
         """
         Guarda el modelo en la ruta especificada.
-        Args:
-            path (str | Path): Ruta donde se guardará el modelo.
+
+        :param path: Ruta donde guardar el modelo.
+        :type path: str | Path
         """
         print(f"Guardando modelo en {path}...")
         with open(path, "wb") as f:
@@ -171,10 +194,11 @@ class BaselineModel(Model):
     def load_model(path: str | Path) -> "BaselineModel":
         """
         Carga el modelo desde la ruta especificada.
-        Args:
-            path (str | Path): Ruta donde está guardado el modelo.
-        Output:
-            BaselineModel
+
+        :param path: Ruta desde donde cargar el modelo.
+        :type path: str | Path
+        :return: Instancia del modelo cargado.
+        :rtype: BaselineModel
         """
         path = Path(path)
         print(f"- Cargando modelo desde {path}...")

@@ -61,3 +61,10 @@
         - Per-class F1.
     - **Tiempos de inferencia** de los modelos **teacher** y **student**.
     - **Espacio en disco ocupado** por el modelo **teacher** y el modelo **student**.
+
+### Hardware utilizado y tiempo de ejecución ⏱
+- El entrenamiento y evaluación de los modelos se ha realizado en un entorno con las siguientes características:
+    - **Procesador**: AMD Ryzen 7 7800X3D.
+    - **Memoria RAM**: 32 GB.
+    - **Tarjeta gráfica**: NVIDIA GeForce RTX 5070 V2 (12 GB VRAM).
+- El tiempo total de ejecución del notebook es de $\approx 3$ horas (contando con los modelos teacher, baseline y student guardados localmente).

@@ -1,6 +1,7 @@
 import numpy as np
 import torch
 from sklearn.neighbors import NearestNeighbors
+from tqdm import tqdm
 from datasets import Dataset
 
 from src.models.model import Model
@@ -8,6 +9,11 @@ from src.models.transformer_model import TransformerModel
 
 
 class KNNClassifier(Model):
+    """
+    Clase que representa un clasificador k-NN que utiliza embeddings obtenidos
+    de un modelo Transformer para realizar clasificación basada en similitud.
+    """
+
     def __init__(
         self,
         transformer_model: TransformerModel,
@@ -15,7 +21,7 @@ class KNNClassifier(Model):
         k: int
     ):
         """
-        Constructor de la clase KNNClassifier
+        Constructor de la clase KNNClassifier.
 
         :param transformer_model: Transformer para obtener embeddings.
         :type transformer_model: TransformerModel
@@ -31,9 +37,12 @@ class KNNClassifier(Model):
 
     def fit(self, train_dataset: dict | Dataset, train_embeddings: np.ndarray | None = None):
         """
-        Entrena el clasificador k-NN con el conjunto de entrenamiento dado.
-        :param train_dataset: Conjunto de entrenamiento.
+        Entrena el clasificador k-NN construyendo el índice de vecinos más cercanos.
+
+        :param train_dataset: Conjunto de datos de entrenamiento.
         :type train_dataset: dict | Dataset
+        :param train_embeddings: Embeddings precomputados para el conjunto de entrenamiento.
+        :type train_embeddings: np.ndarray | None
         """
         self.train_dataset = train_dataset
         self.train_embeddings = train_embeddings if train_embeddings is not None else self._embed_fn(
@@ -42,6 +51,16 @@ class KNNClassifier(Model):
         self.nearest_neighbors.fit(self.train_embeddings)
 
     def predict(self, texts: dict | Dataset | None = None, embeddings: np.ndarray | None = None):
+        """
+        Predice las etiquetas utilizando el clasificador k-NN.
+
+        :param texts: Conjunto de datos para la predicción.
+        :type texts: dict | Dataset | None
+        :param embeddings: Embeddings precomputados para la predicción.
+        :type embeddings: np.ndarray | None
+        :return: Índices de los vecinos y etiquetas predichas.
+        :rtype: tuple[np.ndarray, np.ndarray]
+        """
         if texts is None and embeddings is None:
             raise ValueError(
                 "Se debe proporcionar un conjunto de datos o embeddings para la predicción.")
@@ -56,7 +75,14 @@ class KNNClassifier(Model):
             predictions.append(pred_label)
         return indices, np.array(predictions)
 
-    def _embed_fn(self, texts: Dataset | dict):
+    def _embed_fn(self, texts: Dataset | dict) -> np.ndarray:
+        """
+        Obtiene los embeddings del Transformer para un conjunto de datos.
+        :param texts: Conjunto de datos para obtener embeddings.
+        :type texts: Dataset | dict
+        :return: Matriz de embeddings.
+        :rtype: np.ndarray
+        """
         embeddings = []
         for text_id in tqdm.tqdm(range(len(texts)), desc="Obteniendo embeddings"):
             input_ids = torch.tensor(
@@ -76,8 +102,15 @@ class KNNClassifier(Model):
 
         return np.vstack(embeddings)
 
-    def _search(self, query_embeddings: np.ndarray | None = None):
+    def _search(self, query_embeddings: np.ndarray | None = None) -> tuple[np.ndarray, np.ndarray, list[list[str]], list[list[int]]]:
+        """
+        Realiza la búsqueda de los k vecinos más cercanos para los embeddings dados.
 
+        :param query_embeddings: Embeddings de consulta.
+        :type query_embeddings: np.ndarray | None
+        :return: Distancias e índices de los vecinos más cercanos.
+        :rtype: tuple[np.ndarray, np.ndarray, list[list[str]], list[list[int]]]
+        """
         distances, indices = self.nearest_neighbors.kneighbors(
             query_embeddings, n_neighbors=self.k)
 

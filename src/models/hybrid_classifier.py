@@ -1,6 +1,5 @@
 import numpy as np
 import torch
-from sklearn.neighbors import NearestNeighbors
 from datasets import Dataset
 import tqdm
 
@@ -9,6 +8,12 @@ from src.models.knn_classifier import KNNClassifier
 
 
 class HybridClassifier(KNNClassifier):
+    """
+    Clase que representa un clasificador híbrido que combina predicciones del modelo
+    Transformer con voto mayoritario del clasificador k-NN, utilizando un parámetro
+    alpha para ponderar ambas contribuciones.
+    """
+
     def __init__(
         self,
         transformer_model: TransformerModel,
@@ -17,15 +22,14 @@ class HybridClassifier(KNNClassifier):
         alpha: float
     ):
         """
-        Constructor de la clase HybridClassifier
-
-        :param transformer_model: Transformer para obtener embeddings y realizar inferencia.
+        Constructor de la clase HybridClassifier.
+        :param transformer_model: Transformer para obtener embeddings y predicciones.
         :type transformer_model: TransformerModel
         :param device: Dispositivo para PyTorch.
         :type device: torch.device
         :param k: Número de vecinos a considerar.
         :type k: int
-        :param alpha: Peso del modelo k-NN en la combinación.
+        :param alpha: Peso para combinar predicciones k-NN y Transformer (0 <= alpha <= 1).
         :type alpha: float
         """
         super().__init__(transformer_model, device, k)
@@ -38,6 +42,7 @@ class HybridClassifier(KNNClassifier):
     ) -> tuple[np.ndarray, np.ndarray]:
         """
         Realiza la predicción combinando k-NN y el modelo Transformer.
+
         :param texts: Conjunto de datos para la predicción.
         :type texts: dict | Dataset
         :param embeddings: Embeddings precomputados para la predicción.
